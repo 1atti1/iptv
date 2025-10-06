@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#3b82f6" />
+    <meta name="description" content="IPTV Manager - Sistema completo de gerenciamento de playlists M3U com organização por categorias" />
+    <meta name="keywords" content="IPTV, M3U, playlist, streaming, canais, filmes, séries, desenhos" />
+    <meta name="author" content="IPTV Manager" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="IPTV Manager" />
+    <meta property="og:description" content="Gerencie suas playlists IPTV de forma organizada" />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:title" content="IPTV Manager" />
+    <meta property="twitter:description" content="Gerencie suas playlists IPTV de forma organizada" />
+    
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    
+    <!-- Fontes do Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <title>IPTV Manager - Gerenciador de Playlists M3U</title>
+    
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      
+      body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+          'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        background-color: #f3f4f6;
+      }
+      
+      code {
+        font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+      }
+      
+      #root {
+        min-height: 100vh;
+      }
+      
+      /* Loading Screen */
+      .loading-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease-out;
+      }
+      
+      .loading-screen.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+      
+      .loading-logo {
+        width: 80px;
+        height: 80px;
+        background: white;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 24px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        animation: pulse 2s ease-in-out infinite;
+      }
+      
+      .loading-logo svg {
+        width: 48px;
+        height: 48px;
+        color: #667eea;
+      }
+      
+      .loading-text {
+        color: white;
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 16px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      
+      .loading-subtitle {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 14px;
+        font-weight: 400;
+      }
+      
+      .loading-spinner {
+        width: 40px;
+        height: 40px;
+        margin-top: 24px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-top-color: white;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+      
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+      
+      @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+      }
+      
+      /* Responsivo */
+      @media (max-width: 768px) {
+        .loading-logo {
+          width: 60px;
+          height: 60px;
+        }
+        
+        .loading-logo svg {
+          width: 36px;
+          height: 36px;
+        }
+        
+        .loading-text {
+          font-size: 20px;
+        }
+        
+        .loading-subtitle {
+          font-size: 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>
+      <div style="padding: 40px; text-align: center; font-family: Arial, sans-serif;">
+        <h1>⚠️ JavaScript Necessário</h1>
+        <p style="margin-top: 16px; color: #666;">
+          Você precisa habilitar JavaScript no seu navegador para usar o IPTV Manager.
+        </p>
+      </div>
+    </noscript>
+    
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+      <div class="loading-logo">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect>
+          <polyline points="17 2 12 7 7 2"></polyline>
+        </svg>
+      </div>
+      <div class="loading-text">IPTV Manager</div>
+      <div class="loading-subtitle">Carregando sua experiência...</div>
+      <div class="loading-spinner"></div>
+    </div>
+    
+    <!-- Root element -->
+    <div id="root"></div>
+    
+    <script>
+      // Remover loading screen quando o app carregar
+      window.addEventListener('load', function() {
+        setTimeout(function() {
+          const loadingScreen = document.getElementById('loading-screen');
+          if (loadingScreen) {
+            loadingScreen.classList.add('hidden');
+            setTimeout(function() {
+              loadingScreen.remove();
+            }, 500);
+          }
+        }, 1000);
+      });
+      
+      // Detectar modo escuro do sistema
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.classList.add('dark');
+      }
+    </script>
+  </body>
+</html>
